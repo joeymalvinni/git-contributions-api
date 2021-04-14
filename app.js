@@ -13,11 +13,11 @@ app.get('/:user/:format', (req, res, next) => {
   const FORMATS = ['activity', 'count']
   if (typeof user !== 'string') return next ({ 
     status: 400,
-    message: 'Invalid type of user \'' + typeof user + '\'. Expected to be of type \'String\'.'
+    message: 'Invalid type of user ' + typeof user + '. Expected to be of type \'String\'.'
   });
   if (typeof format !== 'string') return next ({ 
     status: 400,
-    message: 'Invalid type of format \'' + typeof user + '\'. Expected format to be of type \'String\'.'
+    message: 'Invalid type of format ' + typeof user + '. Expected format to be of type \'String\'.'
   })
   if (!FORMATS.includes(format)) return next ({ 
     status: 400,

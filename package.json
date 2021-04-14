@@ -1,6 +1,6 @@
 {
   "name": "git-contributions-api",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "description": "⌛ A JSON API for a Github user's contributions and activity.",
   "main": "app.js",
   "scripts": {
