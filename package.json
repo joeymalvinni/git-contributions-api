@@ -1,0 +1,23 @@
+{
+  "name": "git-contributions-api",
+  "version": "1.0.0",
+  "description": "An unofficial github contributions API",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "keywords": [
+    "github",
+    "contributions"
+  ],
+  "author": "Joey Malvinni",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.6",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "request": "^2.88.2"
+  }
+}

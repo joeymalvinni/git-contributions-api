@@ -36,8 +36,6 @@ app.use(function(err, req, res, next) {
   res.json({ message: err.message });
 });
 
-module.exports = app;
-
 function renderData (res, req, next) {
   return new Promise((resolve, reject) => {
     const { format, user } = req.params;
@@ -56,7 +54,7 @@ function renderData (res, req, next) {
       // Parse github profile page
       const $ = cheerio.load(body);
       let final = {};
-      console.log($('rect').get().reduce((data, rect) => {
+      $('rect').get().reduce((data, rect) => {
         // Parse contributions value
         const value = (() => {
           const count = $(rect).data('count');
@@ -70,9 +68,52 @@ function renderData (res, req, next) {
         if (!final[year]) final[year] = {};
         if (!final[year][month]) final[year][month] = {}
         final[year][month][day] = value
-      }, {}))
+      }, {})
       res.json(final);
       resolve(final);
     })
   })
 }
+
+function getGithubContributions (user, format) {
+  return new Promise((resolve, reject) => {
+    const FORMATS = ['activity', 'count']
+    if (!FORMATS.includes(format)) reject('Invalid format ' + JSON.stringify(format) +'. Expected one of ' + FORMATS.join(' or '));
+    const url = `https://www.github.com/${user}`;
+
+    request.get(url, (err, response, body) => {
+      // Return error if request had an error
+      if (err) return next(err);
+  
+      // Return 404 if user not found
+      if (response.statusCode === 404) reject({
+        status: 404,
+        message: `User '${user}' not found`
+      });
+  
+      // Parse github profile page
+      const $ = cheerio.load(body);
+      let final = {};
+      $('rect').get().reduce((data, rect) => {
+        // Parse contributions value
+        const value = (() => {
+          const count = $(rect).data('count');
+          if (format === 'activity') return count > 0;
+          if (format === 'count') return count;
+        })();
+  
+        // Parse contributions date
+        if (!$(rect).data('date')) return;
+        const [year, month, day] = $(rect).data('date').split('-').map(dateNum => parseInt(dateNum));
+        if (!final[year]) final[year] = {};
+        if (!final[year][month]) final[year][month] = {}
+        final[year][month][day] = value
+      }, {})
+      resolve(final);
+    })
+  })
+}
+
+module.exports = getGithubContributions;
+module.exports.Server = app;
+module.exports.getGithubContributions = getGithubContributions;
